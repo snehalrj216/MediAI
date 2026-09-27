@@ -29,7 +29,7 @@ function Doctors() {
     const fetchDoctors = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/doctors"
+          "https://mediai-vs5s.onrender.com/api/doctors"
         );
 
         const data = await response.json();

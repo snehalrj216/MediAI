@@ -5,8 +5,8 @@ import {
   Routes,
   Route,
   Navigate,
+  Link,
 } from "react-router-dom";
-
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/dash";
@@ -32,20 +32,19 @@ function Home() {
 
         <div className="home-buttons">
 
-          <a
-            href="/login"
-            className="home-btn primary"
-          >
-            Login
-          </a>
+<Link
+  to="/login"
+  className="home-btn primary"
+>
+  Login
+</Link>
 
-          <a
-            href="/register"
-            className="home-btn secondary"
-          >
-            Register
-          </a>
-
+<Link
+  to="/register"
+  className="home-btn secondary"
+>
+  Register
+</Link>
         </div>
 
       </div>

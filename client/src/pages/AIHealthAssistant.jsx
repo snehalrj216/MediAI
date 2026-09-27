@@ -35,7 +35,7 @@ function AIHealthAssistant() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/ai/health-assistant",
+        "https://mediai-vs5s.onrender.com/api/ai/health-assistant",
         {
           method: "POST",
           headers: {

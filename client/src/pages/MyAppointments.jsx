@@ -28,7 +28,7 @@ function MyAppointments() {
         }
 
         const response = await fetch(
-          `http://localhost:5000/api/appointments/patient/${user.id}`
+          `https://mediai-vs5s.onrender.com/api/appointments/patient/${user.id}`
         );
 
         const data = await response.json();
@@ -56,7 +56,7 @@ function MyAppointments() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/appointments/${appointmentId}/status`,
+        `https://mediai-vs5s.onrender.com/api/appointments/${appointmentId}/status`,
         {
           method: "PATCH",
           headers: {

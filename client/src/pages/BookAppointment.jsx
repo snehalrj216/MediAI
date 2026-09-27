@@ -33,7 +33,7 @@ function BookAppointment() {
     const fetchDoctors = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/doctors"
+          "https://mediai-vs5s.onrender.com/api/doctors"
         );
 
         const data = await response.json();
@@ -91,7 +91,7 @@ function BookAppointment() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/appointments",
+        "https://mediai-vs5s.onrender.com/api/appointments",
         {
           method: "POST",
           headers: {
