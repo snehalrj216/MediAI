@@ -6,10 +6,19 @@ import {
   Loader2,
   Send,
   Stethoscope,
-  Lightbulb,
-  ShieldAlert,
-  ListChecks,
 } from "lucide-react";
+
+const crisisKeywords = [
+  "suicide",
+  "kill myself",
+  "end my life",
+  "self harm",
+  "hurt myself",
+  "want to die",
+  "no reason to live",
+  "cant go on",
+  "can't go on",
+];
 
 function AIHealthAssistant() {
   const navigate = useNavigate();
@@ -19,6 +28,7 @@ function AIHealthAssistant() {
   const [specialist, setSpecialist] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isCrisis, setIsCrisis] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +38,20 @@ function AIHealthAssistant() {
       return;
     }
 
+    const lowerConcern = concern.toLowerCase();
+    const crisisDetected = crisisKeywords.some((word) =>
+      lowerConcern.includes(word)
+    );
+
+    if (crisisDetected) {
+      setIsCrisis(true);
+      setResult("");
+      setSpecialist("");
+      setError("");
+      return;
+    }
+
+    setIsCrisis(false);
     setLoading(true);
     setError("");
     setResult("");
@@ -59,9 +83,9 @@ function AIHealthAssistant() {
 
       setResult(aiResult);
 
-      // Extract specialist from AI response
+      // Extract doctor/specialist
       const match = aiResult.match(
-        /Suggested Specialist:\s*(?:-\s*)?([^\n\r]+)/i
+        /Doctor:\s*(?:-\s*)?([^\n\r]+)/
       );
 
       if (match) {
@@ -101,97 +125,7 @@ function AIHealthAssistant() {
     setResult("");
     setSpecialist("");
     setError("");
-  };
-
-  // Format AI response into separate sections
-  const formatAIResult = (text) => {
-    const sections = [
-      {
-        title: "Suggested Specialist",
-        icon: <Stethoscope size={21} />,
-        className: "ai-section-specialist",
-      },
-      {
-        title: "Why",
-        icon: <Lightbulb size={21} />,
-        className: "ai-section-why",
-      },
-      {
-        title: "General Guidance",
-        icon: <ListChecks size={21} />,
-        className: "ai-section-guidance",
-      },
-      {
-        title: "Urgent Warning",
-        icon: <ShieldAlert size={21} />,
-        className: "ai-section-warning",
-      },
-    ];
-
-    return sections.map((section) => {
-      const headingRegex = new RegExp(
-        `${section.title}:?`,
-        "i"
-      );
-
-      const match = headingRegex.exec(text);
-
-      if (!match) return null;
-
-      const start = match.index + match[0].length;
-
-      const remainingText = text.slice(start);
-
-      const nextHeadingRegex =
-        /Suggested Specialist:|Why:|General Guidance:|Urgent Warning:|Important:/i;
-
-      const nextMatch =
-        nextHeadingRegex.exec(remainingText);
-
-      const content = nextMatch
-        ? remainingText.slice(0, nextMatch.index)
-        : remainingText;
-
-      const lines = content
-        .split(/\r?\n/)
-        .map((line) =>
-          line
-            .replace(/^\s*[-•]\s*/, "")
-            .replace(/\*\*/g, "")
-            .trim()
-        )
-        .filter(Boolean);
-
-      return (
-        <div
-          key={section.title}
-          className={`ai-section ${section.className}`}
-        >
-          <div className="ai-section-heading">
-            <span className="ai-section-icon">
-              {section.icon}
-            </span>
-
-            <h3>{section.title}</h3>
-          </div>
-
-          <div className="ai-section-body">
-            {lines.map((line, index) => (
-              <p key={index}>
-                {section.title ===
-                  "General Guidance" && (
-                  <span className="ai-bullet">
-                    •
-                  </span>
-                )}
-
-                {line}
-              </p>
-            ))}
-          </div>
-        </div>
-      );
-    });
+    setIsCrisis(false);
   };
 
   return (
@@ -279,7 +213,7 @@ function AIHealthAssistant() {
               )}
             </button>
 
-            {(concern || result) && !loading && (
+            {(concern || result || isCrisis) && !loading && (
               <button
                 type="button"
                 className="secondary-btn"
@@ -293,6 +227,37 @@ function AIHealthAssistant() {
 
         </form>
 
+        {/* CRISIS ALERT */}
+        {isCrisis && (
+          <div className="ai-crisis-alert">
+            <h2>You're not alone — help is available right now</h2>
+
+            <p>
+              If you are in immediate danger, please call{" "}
+              <strong>112</strong> (Emergency) right away.
+            </p>
+
+            <ul>
+              <li>
+                <strong>AASRA:</strong> 91-9820466726 (24/7)
+              </li>
+              <li>
+                <strong>iCall:</strong> 9152987821
+              </li>
+              <li>
+                <strong>Kiran Mental Health Helpline:</strong>{" "}
+                1800-599-0019 (Govt of India, 24/7)
+              </li>
+            </ul>
+
+            <p>
+              Please reach out to someone you trust, or contact
+              one of these services. You deserve support, and
+              people are ready to help.
+            </p>
+          </div>
+        )}
+
         {/* AI RESULT */}
         {result && (
           <div className="ai-result">
@@ -305,8 +270,16 @@ function AIHealthAssistant() {
               </h2>
             </div>
 
+            {/* DIRECTLY DISPLAY AI RESPONSE */}
             <div className="ai-result-content">
-              {formatAIResult(result)}
+              {result
+                .split("\n")
+                .filter((line) => line.trim() !== "")
+                .map((line, index) => (
+                  <p key={index}>
+                    {line}
+                  </p>
+                ))}
             </div>
 
             {/* DISCLAIMER */}

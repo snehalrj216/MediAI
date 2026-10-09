@@ -2420,8 +2420,11 @@ button {
 .ai-result-content {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   margin-top: 22px;
+}
+.ai-result-content p {
+  margin: 0;
 }
 
 .ai-section {
