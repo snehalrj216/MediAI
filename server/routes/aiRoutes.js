@@ -86,7 +86,15 @@ Rules:
 - Use simple language.
 `;
 
+    console.log("Health assistant request received. Concern:", concern);
+
     const response = await generateWithRetry(prompt);
+
+    console.log("Gemini raw response.text:", JSON.stringify(response.text));
+    console.log(
+      "Gemini response.text length:",
+      response.text ? response.text.length : "undefined/null"
+    );
 
     res.json({
       success: true,
